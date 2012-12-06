@@ -10,17 +10,19 @@
  *******************************************************************************/
 package org.eclipse.sisu.binders;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.eclipse.sisu.converters.FileTypeConverter;
-import org.eclipse.sisu.converters.URLTypeConverter;
-import org.eclipse.sisu.locators.BeanLocator;
-
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.spi.Element;
 import com.google.inject.spi.Elements;
+import org.eclipse.sisu.converters.FileTypeConverter;
+import org.eclipse.sisu.converters.URLTypeConverter;
+import org.eclipse.sisu.locators.BeanLocator;
+import org.eclipse.sisu.scanners.analyzer.WiringFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Guice {@link Module} that automatically adds {@link BeanLocator}-backed bindings for non-local bean dependencies.
@@ -32,19 +34,25 @@ public class WireModule
     // Implementation fields
     // ----------------------------------------------------------------------
 
+    private final Iterable<WiringFactory> extensionWiringFactories;
     private final List<Module> modules;
 
     // ----------------------------------------------------------------------
     // Constructors
     // ----------------------------------------------------------------------
 
-    public WireModule( final Module... modules )
+    public WireModule(Module... modules)
     {
-        this( Arrays.asList( modules ) );
+        this(Arrays.asList(modules));
     }
 
-    public WireModule( final List<Module> modules )
+    public WireModule(List<Module> modules)
     {
+        this(modules, Collections.<WiringFactory>emptyList());
+    }
+    public WireModule(List<Module> modules, Iterable<WiringFactory> extensionWiringFactories)
+    {
+        this.extensionWiringFactories = extensionWiringFactories;
         this.modules = modules;
     }
 
@@ -54,6 +62,15 @@ public class WireModule
 
     public void configure( final Binder binder )
     {
+        List<Wiring> wiringList = new ArrayList<Wiring>();
+        for (WiringFactory wiringFactory : extensionWiringFactories)
+        {
+            wiringList.add(wiringFactory.create(binder));
+        }
+
+        // will bind any unbound with a generic bean locator
+        wiringList.add(wiring(binder));
+
         final ElementAnalyzer analyzer = getAnalyzer( binder );
         for ( final Module m : modules )
         {
@@ -62,7 +79,8 @@ public class WireModule
                 e.acceptVisitor( analyzer );
             }
         }
-        analyzer.apply( wiring( binder ) );
+
+        analyzer.apply( wiringList );
     }
 
     // ----------------------------------------------------------------------

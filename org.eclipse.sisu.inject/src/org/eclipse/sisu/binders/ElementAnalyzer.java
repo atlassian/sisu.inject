@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.sisu.Parameters;
+import org.eclipse.sisu.locators.BeanLocator;
 import org.eclipse.sisu.reflect.Logs;
 import org.eclipse.sisu.reflect.TypeParameters;
 
@@ -76,7 +77,7 @@ final class ElementAnalyzer
         localKeys.addAll( keys );
     }
 
-    public void apply( final Wiring wiring )
+    public void apply( final List<Wiring> wiringList )
     {
         // calculate which dependencies are missing from the module elements
         final Set<Key<?>> missingKeys = analyzer.findMissingKeys( localKeys );
@@ -87,9 +88,15 @@ final class ElementAnalyzer
             {
                 wireParameters( key, mergedProperties );
             }
-            else
+            else if (!isRestricted(key))
             {
-                wiring.wire( key );
+                for (Wiring wiring : wiringList)
+                {
+                    if (wiring.wire( key ))
+                    {
+                        break;
+                    }
+                }
             }
         }
 
@@ -98,8 +105,20 @@ final class ElementAnalyzer
             // ignore parent local/wired dependencies
             privateAnalyzer.ignoreKeys( localKeys );
             privateAnalyzer.ignoreKeys( missingKeys );
-            privateAnalyzer.apply( wiring );
+            privateAnalyzer.apply( wiringList );
         }
+    }
+
+    /**
+     * Determines whether the given type is restricted and therefore can never be overridden by the import binder.
+     *
+     * @param key The binding key
+     * @return {@code true} if the given type is restricted; otherwise {@code false}
+     */
+    private static boolean isRestricted( final Key<?> key )
+    {
+        Class<?> clazz = key.getTypeLiteral().getRawType();
+        return "org.slf4j.Logger".equals( clazz.getName() ) || BeanLocator.class.isAssignableFrom( clazz );
     }
 
     @Override

@@ -88,7 +88,7 @@ final class LocatorWiring
         {
             bindSetImport( key );
         }
-        else if ( !isRestricted( clazz ) )
+        else
         {
             bindBeanImport( key );
         }
@@ -237,16 +237,5 @@ final class LocatorWiring
         {
             // can safely ignore
         }
-    }
-
-    /**
-     * Determines whether the given type is restricted and therefore can never be overridden by the import binder.
-     * 
-     * @param clazz The binding type
-     * @return {@code true} if the given type is restricted; otherwise {@code false}
-     */
-    private static boolean isRestricted( final Class<?> clazz )
-    {
-        return "org.slf4j.Logger".equals( clazz.getName() ) || BeanLocator.class.isAssignableFrom( clazz );
     }
 }

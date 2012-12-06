@@ -61,7 +61,7 @@ public abstract class InjectedTest
     public void setUp()
         throws Exception
     {
-        Guice.createInjector( new WireModule( new SetUpModule(), new SpaceModule( space(), scanning() ) ) );
+        Guice.createInjector( new WireModule(new SpaceModule( space(), scanning() ), new SetUpModule()) );
     }
 
     @After

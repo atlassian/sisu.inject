@@ -57,6 +57,8 @@ Export-Package: org.eclipse.sisu;uses:="javax.inject",
  org.eclipse.sisu.locators.spi;uses:="com.google.inject",
  org.eclipse.sisu.reflect;uses:="org.osgi.framework,com.google.inject",
  org.eclipse.sisu.scanners;uses:="org.objectweb.asm,org.eclipse.sisu.reflect",
+ org.eclipse.sisu.scanners.module,
+ org.eclipse.sisu.scanners.analyzer,
  org.eclipse.sisu.scanners.index;
   uses:="org.eclipse.sisu.reflect,
    javax.lang.model,

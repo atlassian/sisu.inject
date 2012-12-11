@@ -61,8 +61,8 @@
   </mailingLists>
 
   <scm>
-    <connection>scm:git:git://git.eclipse.org/gitroot/sisu/org.eclipse.sisu.inject.git</connection>
-    <developerConnection>scm:git:ssh://git.eclipse.org/gitroot/sisu/org.eclipse.sisu.inject.git</developerConnection>
+    <connection>scm:git:git://github.com/mrdon/sisu.inject.git</connection>
+    <developerConnection>scm:git:git@github.com:mrdon/sisu.inject.git</developerConnection>
     <url>http://git.eclipse.org/c/sisu/org.eclipse.sisu.inject.git/tree/</url>
   </scm>
 
@@ -167,6 +167,14 @@
           <artifactId>maven-site-plugin</artifactId>
           <version>3.1</version>
         </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.1</version>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>
@@ -209,4 +217,16 @@
     </profile>
   </profiles>
 
+     <distributionManagement>
+        <repository>
+            <id>atlassian-m2-repository</id>
+            <name>Atlassian Public Repository</name>
+            <url>https://maven.atlassian.com/public</url>
+        </repository>
+        <snapshotRepository>
+            <id>atlassian-m2-snapshot-repository</id>
+            <name>Atlassian Public Snapshot Repository</name>
+            <url>https://maven.atlassian.com/public-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>

@@ -211,6 +211,12 @@ public final class SisuActivator implements BundleActivator, BundleTrackerCustom
         {
             return false; // fragment, we'll scan it when we process the host
         }
+
+        if ( null != headers.get("Spring-Context"))
+        {
+            return false; // don't process Spring bundles
+        }
+
         final String imports = (String) headers.get( Constants.IMPORT_PACKAGE );
         if ( null == imports )
         {

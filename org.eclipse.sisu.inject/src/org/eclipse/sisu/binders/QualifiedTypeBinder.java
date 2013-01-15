@@ -208,7 +208,7 @@ public final class QualifiedTypeBinder
         {
             final Key key = getBindingKey( params[0], getBindingName( providerType ) );
             final ScopedBindingBuilder sbb = binder.bind( key ).toProvider( providerType );
-            if ( providerType.isAnnotationPresent( EagerSingleton.class ) )
+            if ( hasEagerAnnotation(providerType) )
             {
                 sbb.asEagerSingleton();
             }
@@ -238,7 +238,7 @@ public final class QualifiedTypeBinder
     private void bindQualifiedType( final Class<?> qualifiedType )
     {
         final ScopedBindingBuilder sbb = binder.bind( qualifiedType );
-        if ( qualifiedType.isAnnotationPresent( EagerSingleton.class ) )
+        if ( hasEagerAnnotation(qualifiedType))
         {
             sbb.asEagerSingleton();
         }
@@ -258,6 +258,29 @@ public final class QualifiedTypeBinder
         {
             binder.bind( new WildcardKey( qualifiedType, bindingName ) ).to( qualifiedType );
         }
+    }
+
+    /**
+     * Determines if a class has an annotation that makes it an eager singleton
+     * @param type the class to check
+     * @return if it's eager
+     */
+    private boolean hasEagerAnnotation(Class<?> type)
+    {
+        if(type.isAnnotationPresent(EagerSingleton.class))
+        {
+            return true;
+        }
+        
+        for(Annotation anno : type.getAnnotations())
+        {
+            if(anno.annotationType().isAnnotationPresent(EagerSingleton.class))
+            {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
     /**

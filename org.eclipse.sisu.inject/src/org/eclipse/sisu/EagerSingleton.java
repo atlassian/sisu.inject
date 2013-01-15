@@ -16,10 +16,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
+
 /**
  * Identifies beans that should be created as soon as the Injector starts.
  */
-@Target( value = { ElementType.TYPE } )
+@Target( value = { ElementType.TYPE , ANNOTATION_TYPE } )
 @Retention( RetentionPolicy.RUNTIME )
 @Documented
 public @interface EagerSingleton

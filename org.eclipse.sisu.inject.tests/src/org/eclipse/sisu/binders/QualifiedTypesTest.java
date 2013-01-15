@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.net.URL;
 import java.util.EventListener;
 import java.util.RandomAccess;
@@ -24,7 +25,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Qualifier;
 
-import junit.framework.TestCase;
+import com.google.inject.*;
+import com.google.inject.name.Names;
 
 import org.eclipse.sisu.BeanEntry;
 import org.eclipse.sisu.EagerSingleton;
@@ -34,14 +36,9 @@ import org.eclipse.sisu.reflect.ClassSpace;
 import org.eclipse.sisu.reflect.URLClassSpace;
 import org.eclipse.sisu.scanners.QualifiedTypeListener;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Binder;
-import com.google.inject.Guice;
-import com.google.inject.ImplementedBy;
-import com.google.inject.Injector;
-import com.google.inject.Key;
-import com.google.inject.Module;
-import com.google.inject.name.Names;
+import junit.framework.TestCase;
+
+import static java.lang.annotation.ElementType.TYPE;
 
 public class QualifiedTypesTest
     extends TestCase
@@ -80,6 +77,26 @@ public class QualifiedTypesTest
     @Named
     @EagerSingleton
     static class DefaultB03
+    {
+        static boolean initialized;
+
+        @Inject
+        void initialize()
+        {
+            initialized = true;
+        }
+    }
+
+    @Target(TYPE)
+    @Retention( RetentionPolicy.RUNTIME )
+    @EagerSingleton
+    public @interface CustomEager
+    {
+    }
+    
+    @Named
+    @CustomEager
+    static class DefaultB03Custom
     {
         static boolean initialized;
 
@@ -239,6 +256,7 @@ public class QualifiedTypesTest
         locator = injector.getInstance( BeanLocator.class );
 
         assertTrue( DefaultB03.initialized );
+        assertTrue( DefaultB03Custom.initialized );
     }
 
     private void checkDefaultBinding( final Class<?> api, final Class<?> imp )

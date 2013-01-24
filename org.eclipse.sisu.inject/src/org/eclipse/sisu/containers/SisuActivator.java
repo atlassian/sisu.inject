@@ -87,12 +87,16 @@ public final class SisuActivator implements BundleActivator, BundleTrackerCustom
     public void start( final BundleContext context )
     {
         bundleContext = context;
+        
+        //these have to be set BEFORE we open any trackers!!
+        extensionModules = findExtensionFactories(context, ModuleFactory.class, new SisuModuleFinder(false));
+        extensionWirings = findExtensionFactories(context, WiringFactory.class, new SisuWiringFinder(false));
+        
         serviceTracker = new ServiceTracker( context, BUNDLE_INJECTOR_CLASS_NAME, this );
         serviceTracker.open();
         bundleTracker = new BundleTracker( context, Bundle.ACTIVE, this );
         bundleTracker.open();
-        extensionModules = findExtensionFactories(context, ModuleFactory.class, new SisuModuleFinder(false));
-        extensionWirings = findExtensionFactories(context, WiringFactory.class, new SisuWiringFinder(false));
+        
     }
 
     private <T> List<T> findExtensionFactories(BundleContext context, Class<T> extensionClass, ClassFinder classFinder)

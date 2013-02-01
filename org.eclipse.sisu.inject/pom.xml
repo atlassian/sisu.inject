@@ -35,7 +35,7 @@
     <parent>
     <groupId>com.atlassian.org.eclipse.sisu</groupId>
     <artifactId>sisu-inject</artifactId>
-    <version>0.0.0-SNAPSHOT</version>
+    <version>0.0.0.atlassian5</version>
   </parent>
 
   <packaging>eclipse-plugin</packaging>

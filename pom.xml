@@ -61,8 +61,8 @@
   </mailingLists>
 
   <scm>
-    <connection>scm:git:git://github.com/mrdon/sisu.inject.git</connection>
-    <developerConnection>scm:git:git@github.com:mrdon/sisu.inject.git</developerConnection>
+    <connection>scm:git:git://github.com/atlassian/sisu.inject.git</connection>
+    <developerConnection>scm:git:git@github.com:atlassian/sisu.inject.git</developerConnection>
     <url>http://git.eclipse.org/c/sisu/org.eclipse.sisu.inject.git/tree/</url>
     <tag>HEAD</tag>
   </scm>

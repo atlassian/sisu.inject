@@ -314,7 +314,8 @@ public final class SisuActivator implements BundleActivator, BundleTrackerCustom
 
         public void configure( final Binder binder )
         {
-            binder.requestStaticInjection( SisuGuice.class );
+            // Taking this out as it causes a huge memory leak in restarts in Atlassian products
+            // binder.requestStaticInjection( SisuGuice.class );
             binder.bind( ParameterKeys.PROPERTIES ).toInstance( properties );
             binder.bind( MutableBeanLocator.class ).toInstance( locator );
             binder.bind( BundleContext.class ).toInstance( extendedBundleContext );

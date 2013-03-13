@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.sisu.reflect;
 
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -66,21 +65,14 @@ final class BeanPropertyIterator<T>
 
             if ( member instanceof Method )
             {
-                final Method method = (Method) member;
-                if ( isSetter( method ) )
+                if ( isSetterOrAdder( member ) )
                 {
-                    nextProperty = new BeanPropertySetter<T>( method );
+                    nextProperty = new BeanPropertySetter<T>( (Method) member );
                 }
             }
             else if ( member instanceof Field )
             {
                 nextProperty = new BeanPropertyField<T>( (Field) member );
-            }
-
-            // ignore properties annotated with JSR330/Guice
-            if ( null != nextProperty && atInject( member ) )
-            {
-                nextProperty = null;
             }
         }
 
@@ -108,20 +100,12 @@ final class BeanPropertyIterator<T>
     // Implementation methods
     // ----------------------------------------------------------------------
 
-    private static boolean isSetter( final Method method )
+    private static boolean isSetterOrAdder( final Member member )
     {
-        final String name = method.getName();
-        if ( name.startsWith( "set" ) && name.length() > 3 && Character.isUpperCase( name.charAt( 3 ) ) )
-        {
-            return method.getParameterTypes().length == 1;
-        }
-        return false;
-    }
-
-    private static boolean atInject( final Member member )
-    {
-        final AnnotatedElement e = (AnnotatedElement) member;
-        return e.isAnnotationPresent( javax.inject.Inject.class )
-            || e.isAnnotationPresent( com.google.inject.Inject.class );
+        final String name = member.getName();
+        return ( name.startsWith( "set" ) || name.startsWith( "add" ) ) //
+            && name.length() > 3
+            && Character.isUpperCase( name.charAt( 3 ) )
+            && ( (Method) member ).getParameterTypes().length == 1;
     }
 }

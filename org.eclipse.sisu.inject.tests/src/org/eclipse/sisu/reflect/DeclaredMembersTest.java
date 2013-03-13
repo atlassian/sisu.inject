@@ -12,7 +12,6 @@ package org.eclipse.sisu.reflect;
 
 import java.lang.reflect.Member;
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import junit.framework.TestCase;
@@ -84,7 +83,7 @@ public class DeclaredMembersTest
 
     public void testJavaClass()
     {
-        final Iterator<Member> i = new DeclaredMembers( List.class ).iterator();
+        final Iterator<Member> i = new DeclaredMembers( Object.class ).iterator();
 
         assertFalse( i.hasNext() );
 
